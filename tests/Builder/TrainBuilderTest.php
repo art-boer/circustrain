@@ -7,8 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 final class TrainBuilderTest extends TestCase
 {
-    private array $animals;
-
     private TrainBuilder $trainBuilder;
 
     public function setUp(): void
