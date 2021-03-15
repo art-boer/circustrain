@@ -10,5 +10,10 @@
             "name": "Art Boer",
             "email": "479288@student.fontys.nl"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": {
+            "Circustrein\\": "src/"
+        }
+    }
 }
