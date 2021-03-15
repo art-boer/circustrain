@@ -1,0 +1,14 @@
+{
+    "name": "artboer/circustrein",
+    "description": "Circustrein opdracht algoritmes",
+    "type": "project",
+    "require": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "authors": [
+        {
+            "name": "Art Boer",
+            "email": "479288@student.fontys.nl"
+        }
+    ]
+}
