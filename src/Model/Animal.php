@@ -37,7 +37,7 @@ class Animal
             case 'Small':
                 return 1;
             default:
-                throw new \Exception('Error: Tried to add unknown animal size to wagon.');
+                throw new \Exception('Error: Unknown animal size.');
         }
     }
 }

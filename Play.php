@@ -40,3 +40,4 @@ $animals = array(
 $trainBuilder = new TrainBuilder($animals);
 
 echo print_r($trainBuilder->getTrain(), true);
+echo count($trainBuilder->getTrain());

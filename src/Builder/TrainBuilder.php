@@ -102,7 +102,8 @@ class TrainBuilder
         $hasCarnivore = $this->currentWagon->hasCarnivore();
 
         foreach ($this->herbivores as $key => $herbivore) {
-            if ($hasCarnivore && $hasCarnivore->getSize() >= $herbivore->getSize()) {
+
+            if ($hasCarnivore && $hasCarnivore->getSpace() >= $herbivore->getSpace()) {
                 break;
             }
 
