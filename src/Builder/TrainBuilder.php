@@ -32,7 +32,7 @@ class TrainBuilder
     {
         $this->filterAnimalTypes($this->animals);
 
-        //Sort herbivores and carnivores into size
+        //Sort herbivores and carnivores by size
         usort($this->herbivores, fn($a, $b) => strcmp($a->getSize(), $b->getSize()));
         usort($this->carnivores, fn($a, $b) => strcmp($a->getSize(), $b->getSize()));
 
@@ -52,22 +52,18 @@ class TrainBuilder
 
     private function fitAnimalsIntoWagons()
     {
-        //Run out of animals
         if (!$this->carnivores && !$this->herbivores) {
             return;
         }
 
-        //Old wagon was full so a new one needs to be created
         if (!$this->currentWagon) {
             $this->currentWagon = new Wagon();
         }
 
-        //Can place carnivores?
         if (!$this->currentWagon->hasCarnivore()) {
             $this->placeBiggestCarnivore();
         }
 
-        //Can place herbivores?
         if ($this->herbivores) {
             $this->placeBiggestHerbivore();
         }
