@@ -38,6 +38,36 @@ final class TrainBuilderTest extends TestCase
         $this->trainBuilder = new TrainBuilder($this->animals);
     }
 
+    public function testAnimalsDontGetEatenInWagons(): void
+    {
+        $train = $this->trainBuilder->getTrain();
+
+        foreach ($train as $wagon) {
+            $carnivore = $wagon->hasCarnivore();
+
+            if (!$carnivore) {
+                continue;
+            }
+
+            foreach ($wagon->getAnimals() as $animal) {
+                if ($animal === $carnivore) {
+                    continue;
+                }
+
+                $this->assertGreaterThan($carnivore->getSpace(), $animal->getSpace());
+            }
+        }
+    }
+
+    public function testNoWagonIsOverfilled(): void
+    {
+        $train = $this->trainBuilder->getTrain();
+
+        foreach ($train as $wagon) {
+            $this->assertGreaterThanOrEqual(0, $wagon->getSpaceLeft());
+        }
+    }
+
     public function testCanFillTwelveWagons(): void
     {
         $this->assertCount(12, $this->trainBuilder->getTrain(), 'Train does not contain 12 wagons!');
