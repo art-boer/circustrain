@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+namespace Circustrein\Tests\Integration;
+
 use Circustrein\Builder\TrainBuilder;
 use Circustrein\Model\Animal;
 use PHPUnit\Framework\TestCase;
