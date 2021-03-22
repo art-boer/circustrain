@@ -58,7 +58,7 @@ class AnimalService
 
     public function hasAnimals(): bool
     {
-        return !empty($this->herbivores) && !empty($this->carnivores);
+        return !empty($this->herbivores) || !empty($this->carnivores);
     }
 
     private function filterAnimalTypes(array $animals): void
