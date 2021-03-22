@@ -5,6 +5,8 @@ include('./vendor/autoload.php');
 
 use Circustrein\Builder\TrainBuilder;
 use Circustrein\Model\Animal;
+use Circustrein\Service\AnimalService;
+use Circustrein\Service\WagonService;
 
 /**
  * Define some animals
@@ -37,6 +39,10 @@ $animals = array(
     new Animal('Small', 'Herbivore'),
 );
 
-$trainBuilder = new TrainBuilder($animals);
+$wagonService = new WagonService();
+$animalService = new AnimalService($wagonService);
+
+$trainBuilder = new TrainBuilder($animalService);
+$trainBuilder->buildTrain($animals);
 
 echo 'Totaal aantal wagons: ' . count($trainBuilder->getTrain());

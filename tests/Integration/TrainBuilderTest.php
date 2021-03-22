@@ -5,6 +5,8 @@ namespace Circustrein\Tests\Integration;
 
 use Circustrein\Builder\TrainBuilder;
 use Circustrein\Model\Animal;
+use Circustrein\Service\AnimalService;
+use Circustrein\Service\WagonService;
 use PHPUnit\Framework\TestCase;
 
 final class TrainBuilderTest extends TestCase
@@ -13,7 +15,7 @@ final class TrainBuilderTest extends TestCase
 
     public function setUp(): void
     {
-        $this->animals = [
+        $animals = [
             new Animal('Big', 'Carnivore'),
             new Animal('Big', 'Carnivore'),
             new Animal('Big', 'Herbivore'),
@@ -35,9 +37,12 @@ final class TrainBuilderTest extends TestCase
             new Animal('Small', 'Herbivore'),
         ];
 
-        shuffle($this->animals);
+        shuffle($animals);
 
-        $this->trainBuilder = new TrainBuilder($this->animals);
+        $wagonService = new WagonService();
+        $animalService = new AnimalService($wagonService);
+        $this->trainBuilder = new TrainBuilder($animalService, $wagonService);
+        $this->trainBuilder->buildTrain($animals);
     }
 
     public function testAnimalsDontGetEatenInWagons(): void
@@ -45,12 +50,13 @@ final class TrainBuilderTest extends TestCase
         $train = $this->trainBuilder->getTrain();
 
         foreach ($train as $wagon) {
-            $carnivore = $wagon->hasCarnivore();
             $this->assertGreaterThanOrEqual(0, $wagon->getSpaceLeft());
 
-            if (!$carnivore) {
+            if (!$wagon->hasCarnivore()) {
                 continue;
             }
+
+            $carnivore = $wagon->getCarnivore();
 
             foreach ($wagon->getAnimals() as $animal) {
                 if ($animal === $carnivore) {
@@ -61,6 +67,6 @@ final class TrainBuilderTest extends TestCase
             }
         }
 
-        $this->assertCount(12, $train, 'Train does not contain 12 wagons!');
+        $this->assertCount(11, $train, 'Train does not contain 11 wagons!');
     }
 }

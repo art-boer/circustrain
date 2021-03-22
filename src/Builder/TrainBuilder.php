@@ -3,24 +3,29 @@ declare(strict_types=1);
 
 namespace Circustrein\Builder;
 
-use Circustrein\Model\Wagon;
-use Circustrein\Model\Animal;
+use Circustrein\Service\AnimalService;
+use Circustrein\Service\WagonService;
 
 class TrainBuilder
 {
-    private array $animals;
+    private AnimalService $animalService;
 
-    private array $herbivores;
-
-    private array $carnivores;
+    private WagonService $wagonService;
 
     private array $train = [];
 
-    private ?Wagon $currentWagon = null;
+    public function __construct(
+        AnimalService $animalService,
+        WagonService $wagonService
+    ) {
+        $this->animalService = $animalService;
+        $this->wagonService = $wagonService;
+    }
 
-    public function __construct(array $animals) {
-        $this->animals = $animals;
-        $this->setupTrain();
+    public function buildTrain(array $animals): void
+    {
+        $this->animalService->setAnimals($animals);
+        $this->buildWagons();
     }
 
     public function getTrain(): array
@@ -28,94 +33,23 @@ class TrainBuilder
         return $this->train;
     }
 
-    private function setupTrain(): void
+    private function buildWagons()
     {
-        $this->filterAnimalTypes($this->animals);
-
-        //Sort herbivores and carnivores by size
-        usort($this->herbivores, fn($a, $b) => strcmp($a->getSize(), $b->getSize()));
-        usort($this->carnivores, fn($a, $b) => strcmp($a->getSize(), $b->getSize()));
-
-        $this->fitAnimalsIntoWagons();
-    }
-
-    private function filterAnimalTypes(array $animals): void
-    {
-        $this->herbivores = array_filter($animals, function($animal) {
-            return ($animal->getDiet() === 'Herbivore');
-        });
-
-        $this->carnivores = array_filter($animals, function($animal) {
-            return ($animal->getDiet() === 'Carnivore');
-        });
-    }
-
-    private function fitAnimalsIntoWagons()
-    {
-        if (!$this->carnivores && !$this->herbivores) {
+        if (!$this->animalService->hasAnimals()) {
             return;
         }
 
-        if (!$this->currentWagon) {
-            $this->currentWagon = new Wagon();
+        $wagon = $this->wagonService->createWagon();
+
+        if ($this->animalService->hasCarnivores()) {
+            $this->animalService->addBiggestCarnivoreToWagon($wagon);
         }
 
-        if (!$this->currentWagon->hasCarnivore()) {
-            $this->placeBiggestCarnivore();
+        if ($this->animalService->hasHerbivores()) {
+            $this->animalService->addHerbivoresToWagon($wagon);
         }
 
-        if ($this->herbivores) {
-            $this->placeBiggestHerbivore();
-        }
-
-        $this->addCurrentWagonToTrain();
-        $this->fitAnimalsIntoWagons();
-    }
-
-    private function addCurrentWagonToTrain(): void
-    {
-        array_push($this->train, $this->currentWagon);
-        $this->currentWagon = null;
-    }
-
-    private function placeBiggestCarnivore(): void
-    {
-        if (empty($this->carnivores)) {
-            return;
-        }
-
-        $this->currentWagon->addAnimal($this->carnivores[0]);
-        $this->currentWagon->setHasCarnivore($this->carnivores[0]);
-        array_shift($this->carnivores);
-    }
-
-    private function placeBiggestHerbivore(): void
-    {
-        if (empty($this->herbivores)) {
-            return;
-        }
-
-        $hasCarnivore = $this->currentWagon->hasCarnivore();
-
-        foreach ($this->herbivores as $key => $herbivore) {
-
-            if ($hasCarnivore && $hasCarnivore->getSpace() >= $herbivore->getSpace()) {
-                break;
-            }
-
-            if (!$this->canFitInWagon($herbivore)) {
-                continue;
-            }
-
-            $this->currentWagon->addAnimal($herbivore);
-            unset($this->herbivores[$key]);
-        }
-    }
-
-    private function canFitInWagon(Animal $animal): bool
-    {
-        $wagonSpaceLeft = $this->currentWagon->getSpaceLeft();
-
-        return ($wagonSpaceLeft - $animal->getSpace()) >= 0;
+        array_push($this->train, $wagon);
+        $this->buildWagons();
     }
 }

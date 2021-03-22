@@ -7,7 +7,7 @@ class Wagon
 {
     private array $animals = [];
 
-    private ?Animal $hasCarnivore = null;
+    private ?Animal $carnivore = null;
 
     private int $spaceLeft = 10;
 
@@ -15,6 +15,10 @@ class Wagon
     {
         $this->spaceLeft -= $animal->getSpace();
         array_push($this->animals, $animal);
+
+        if ($animal->getDiet() === 'Carnivore') {
+            $this->carnivore = $animal;
+        }
     }
 
     public function getAnimals(): array
@@ -27,17 +31,13 @@ class Wagon
         return $this->spaceLeft;
     }
 
-    public function setHasCarnivore(Animal $animal): void
+    public function getCarnivore(): Animal
     {
-        if ($animal->getDiet() !== 'Carnivore') {
-            throw new \Exception('Error: Tried to set non-carnivore as carnivore.');
-        }
-
-        $this->hasCarnivore = $animal;
+        return $this->carnivore;
     }
 
-    public function hasCarnivore(): ?Animal
+    public function hasCarnivore(): bool
     {
-        return $this->hasCarnivore;
+        return !empty($this->carnivore);
     }
 }
