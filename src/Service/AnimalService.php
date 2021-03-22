@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Circustrein\Service;
 
-use Circustrein\Model\Animal;
 use Circustrein\Model\Wagon;
 
 class AnimalService
