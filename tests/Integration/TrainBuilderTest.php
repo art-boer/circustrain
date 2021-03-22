@@ -52,8 +52,6 @@ final class TrainBuilderTest extends TestCase
         foreach ($train as $wagon) {
             $this->assertGreaterThanOrEqual(0, $wagon->getSpaceLeft());
 
-            var_dump($wagon->getAnimals());
-
             if (!$wagon->hasCarnivore()) {
                 continue;
             }
