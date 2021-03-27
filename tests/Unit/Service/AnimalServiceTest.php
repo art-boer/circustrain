@@ -12,6 +12,8 @@ final class AnimalServiceTest extends TestCase
 {
     private AnimalService $animalService;
 
+    private AnimalService $animalServiceWithoutAnimals;
+
     public function setUp(): void
     {
         $wagonService = $this->createMock(WagonService::class);
@@ -23,6 +25,8 @@ final class AnimalServiceTest extends TestCase
 
         $this->animalService = new AnimalService($wagonService);
         $this->animalService->setAnimals($animals);
+
+        $this->animalServiceWithoutAnimals = new AnimalService($wagonService);
     }
 
     public function testHasCarnivores(): void
@@ -34,8 +38,7 @@ final class AnimalServiceTest extends TestCase
 
     public function testHasNoCarnivores(): void
     {
-        $this->animalService->setAnimals([]);
-        $hasCarnivores = $this->animalService->hasCarnivores();
+        $hasCarnivores = $this->animalServiceWithoutAnimals->hasCarnivores();
 
         $this->assertFalse($hasCarnivores);
     }
@@ -49,8 +52,7 @@ final class AnimalServiceTest extends TestCase
 
     public function testHasNoHerbivores(): void
     {
-        $this->animalService->setAnimals([]);
-        $hasHerbivores = $this->animalService->hasHerbivores();
+        $hasHerbivores = $this->animalServiceWithoutAnimals->hasHerbivores();
 
         $this->assertFalse($hasHerbivores);
     }
@@ -64,8 +66,7 @@ final class AnimalServiceTest extends TestCase
 
     public function testHasNoAnimals(): void
     {
-        $this->animalService->setAnimals([]);
-        $hasAnimals = $this->animalService->hasAnimals();
+        $hasAnimals = $this->animalServiceWithoutAnimals->hasAnimals();
 
         $this->assertFalse($hasAnimals);
     }
